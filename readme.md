@@ -1,6 +1,9 @@
-# Pannellum
+# Pannellum (Antigravity Fork)
 
-[![CI](https://github.com/mpetroff/pannellum/actions/workflows/ci.yaml/badge.svg)](https://github.com/mpetroff/pannellum/actions/workflows/ci.yaml)
+> **Note:** This fork was created and extended with **Antigravity**. It includes additional features such as 2D image support.
+
+
+[![Build Status](https://travis-ci.org/mpetroff/pannellum.svg?branch=master)](https://travis-ci.org/mpetroff/pannellum)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3334433.svg)](https://doi.org/10.5281/zenodo.3334433)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.01628/status.svg)](https://doi.org/10.21105/joss.01628)
 
@@ -28,14 +31,14 @@ If you would like to locally test or self-host Pannellum, continue to the _How t
 2. Use the included multi-resolution generator (`utils/multires/generate.py`), the configuration tool (`utils/config/configuration.htm`), or create a configuration from scratch or based on an [example](https://pannellum.org/documentation/examples/simple-example/).
 3. Insert the generated `<iframe>` code into a page, or create a more advanced configuration with [JSON](https://pannellum.org/documentation/reference) or the [API](https://pannellum.org/documentation/api/).
 
-Configuration parameters are documented in the `doc/json-config-parameters.md` file, which is also available at [pannellum.org/documentation/reference/](https://pannellum.org/documentation/reference). API methods are documented inline with [JSDoc](https://jsdoc.app/) comments, and generated documentation is available at [pannellum.org/documentation/api/](https://pannellum.org/documentation/api/). For the standalone viewer, configuration parameters are preferably specified using a location hash instead of a location search query, e.g., `pannellum.htm#panorama=...` instead of `pannellum.htm?panorama=...`, since this does not unnecessarily send the query parameters to the server.
+Configuration parameters are documented in the `doc/json-config-parameters.md` file, which is also available at [pannellum.org/documentation/reference/](https://pannellum.org/documentation/reference). API methods are documented inline with [JSDoc](https://jsdoc.app/) comments, and generated documentation is available at [pannellum.org/documentation/api/](https://pannellum.org/documentation/api/).
 
 ### Using a minified copy
 
 For final deployment, it is recommended that one use a minified copy of Pannellum instead of using the source files in `src` directly. The easiest method is to download the most recent [release](https://github.com/mpetroff/pannellum/releases) and use the pre-built copy of either `pannellum.htm` or `pannellum.js` & `pannellum.css`. If you wish to make changes to Pannellum or use the latest development copy of the code, follow the instructions in the _Building_ section below to create `build/pannellum.htm`, `build/pannellum.js`, and `build/pannellum.css`.
 
 ### Using `generate.py` to create multires panoramas
-To be able to create multiresolution panoramas, you need to have the `nona` program installed, which is available as part of [Hugin](http://hugin.sourceforge.net/), as well as Python 3 with the [Pillow](https://pillow.readthedocs.org/) and [NumPy](https://numpy.org/) packages. The [pyshtools](https://shtools.github.io/SHTOOLS/) Python package is also recommended. Then, run
+To be able to create multiresolution panoramas, you need to have the `nona` program installed, which is available as part of [Hugin](http://hugin.sourceforge.net/), as well as Python with the [Pillow](https://pillow.readthedocs.org/) package. Then, run
 
 ```
 python3 generate.py pano_image.jpg
@@ -68,7 +71,7 @@ $ cd ../..
 $ python3 -m http.server
 ```
 
-This goes back to the root directory of the repository and starts a local development web server. Then open http://localhost:8000/src/standalone/pannellum.htm#config=../../utils/multires/output/config.json in your web browser of choice.
+This goes back to the root directory of the repository and starts a local development web server. Then open http://localhost:8000/src/standalone/pannellum.htm?config=../../utils/multires/output/config.json in your web browser of choice.
 
 
 ## Bundled examples
@@ -96,7 +99,7 @@ The support list is based on feature support. As only recent browsers are tested
 
 #### Not officially supported:
 
-Mobile / app / web frameworks are not officially supported. They may work, but they're not tested and are not the targeted platform.
+Mobile / app frameworks are not officially supported. They may work, but they're not tested and are not the targeted platform.
 
 ## Translations
 
@@ -135,13 +138,13 @@ port is selected, along with other arguments. One can see usage via:
 $ python tests/run_tests.py --help
 ```
 
-Continuous integration tests are run via [GitHub Actions](https://github.com/mpetroff/pannellum/actions/workflows/ci.yaml). Running the tests locally requires Python 3, the Selenium Python bindings, [Pillow](https://pillow.readthedocs.io/), [NumPy](https://www.numpy.org/), and either Firefox & [geckodriver](https://github.com/mozilla/geckodriver) or Chrome & [ChromeDriver](https://chromedriver.chromium.org/).
+Continuous integration tests are run via [Travis CI](https://travis-ci.org/mpetroff/pannellum). Running the tests locally requires Python 3, the Selenium Python bindings, [Pillow](https://pillow.readthedocs.io/), [NumPy](https://www.numpy.org/), and either Firefox & [geckodriver](https://github.com/mozilla/geckodriver) or Chrome & [ChromeDriver](https://chromedriver.chromium.org/).
 
 ## Seeking support
 If you wish to ask a question or report a bug, please open an issue at [github.com/mpetroff/pannellum](https://github.com/mpetroff/pannellum). See the _Contributing_ section below for more details.
 
 ## Contributing
-Development takes place at [github.com/mpetroff/pannellum](https://github.com/mpetroff/pannellum). Issues should be opened to report bugs or suggest improvements (or ask questions), and pull requests are welcome. Please make an attempt to write in grammatically-correct English on the issue tracker; using the results of machine translation is acceptable if one in not fluent in the language, and attempts to work past language barriers will be made. When reporting a bug, please try to include a minimum reproducible example (or at least some sort of example). When proposing changes, please try to match the existing code style, e.g., four space indentation and [JSHint](https://jshint.com/) validation. If your pull request adds an additional configuration parameter, please document it in `doc/json-config-parameters.md`. Pull requests should preferably be created from [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow).
+Development takes place at [github.com/mpetroff/pannellum](https://github.com/mpetroff/pannellum). Issues should be opened to report bugs or suggest improvements (or ask questions), and pull requests are welcome. When reporting a bug, please try to include a minimum reproducible example (or at least some sort of example). When proposing changes, please try to match the existing code style, e.g., four space indentation and [JSHint](https://jshint.com/) validation. If your pull request adds an additional configuration parameter, please document it in `doc/json-config-parameters.md`. Pull requests should preferably be created from [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow).
 
 ## License
 Pannellum is distributed under the MIT License. For more information, read the file `COPYING` or peruse the license [online](https://github.com/mpetroff/pannellum/blob/master/COPYING).

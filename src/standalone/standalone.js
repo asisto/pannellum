@@ -1,11 +1,8 @@
-function anError(error, showHTML) {
+function anError(error) {
     var errorMsg = document.createElement('div');
     errorMsg.className = 'pnlm-info-box';
     var p = document.createElement('p');
-    if (showHTML)
-        p.innerHTML = error;
-    else
-        p.textContent = error;
+    p.textContent = error;
     errorMsg.appendChild(p);
     document.getElementById('container').appendChild(errorMsg);
 }
@@ -32,42 +29,16 @@ function parseURLParameters() {
         if (value == '')
             continue; // Skip options with empty values in URL config
         switch(option) {
-            case 'hfov':
-            case 'pitch':
-            case 'yaw':
-            case 'haov':
-            case 'vaov':
-            case 'minHfov':
-            case 'maxHfov':
-            case 'minPitch':
-            case 'maxPitch':
-            case 'minYaw':
-            case 'maxYaw':
-            case 'vOffset':
-            case 'autoRotate':
+            case 'hfov': case 'pitch': case 'yaw': case 'haov': case 'vaov':
+            case 'minHfov': case 'maxHfov': case 'minPitch': case 'maxPitch':
+            case 'minYaw': case 'maxYaw': case 'vOffset': case 'autoRotate':
                 configFromURL[option] = Number(value);
                 break;
-            case 'autoLoad': 
-            case 'ignoreGPanoXMP': 
-            case 'compass':
-            case 'showFullscreenCtrl':
-            case 'showZoomCtrl':
-            case 'keyboardZoom':
-            case 'mouseZoom':
-            case 'doubleClickZoom':
-            case 'disableKeyboardCtrl':
-            case 'draggable':
-            case 'showControls':
-            case 'dragConfirm':
+            case 'autoLoad': case 'ignoreGPanoXMP':
                 configFromURL[option] = JSON.parse(value);
                 break;
-            case 'author':
-            case 'title':
-            case 'firstScene':
-            case 'fallback':
-            case 'preview':
-            case 'panorama':
-            case 'config':
+            case 'author': case 'title': case 'firstScene': case 'fallback':
+            case 'preview': case 'panorama': case 'config':
                 configFromURL[option] = decodeURIComponent(value);
                 break;
             default:
@@ -88,7 +59,7 @@ function parseURLParameters() {
                 var a = document.createElement('a');
                 a.href = configFromURL.config;
                 a.textContent = a.href;
-                anError('The file ' + a.outerHTML + ' could not be accessed.', true);
+                anError('The file ' + a.outerHTML + ' could not be accessed.');
                 return;
             }
 
@@ -125,7 +96,6 @@ function parseURLParameters() {
 
     // Create viewer
     configFromURL.escapeHTML = true;
-    configFromURL.targetBlank = true;
     viewer = pannellum.viewer('container', configFromURL);
 }
 

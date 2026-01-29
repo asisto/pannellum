@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Image Test 2</title>
+    <link rel="stylesheet" href="../src/css/pannellum.css" />
+    <script type="text/javascript" src="../src/js/libpannellum.js"></script>
+    <script type="text/javascript" src="../src/js/pannellum.js"></script>
+    <style>
+        #panorama {
+            width: 800px;
+            height: 600px;
+            background: #eee;
+            transition: width 0.5s, height 0.5s;
+        }
+
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .controls {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>2D Image Mode Test - Image 2</h1>
+
+    <div class="controls">
+        <button onclick="resizeContainer(400, 300)">Small (400x300)</button>
+        <button onclick="resizeContainer(800, 600)">Medium (800x600)</button>
+        <button onclick="resizeContainer(1200, 800)">Large (1200x800)</button>
+    </div>
+
+    <div id="panorama"></div>
+
+    <p>
+        Controls: Scroll to zoom, Drag to pan. <br>
+        Hotspots should stay fixed relative to the image features.
+    </p>
+
+    <script>
+        var viewer = pannellum.viewer('panorama', {
+            "type": "2d",
+            "panorama": "2d-img-2.jpg",
+            "autoLoad": true,
+            "objectFit": "cover",
+            "hotSpots": [
+                {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "text": "Center Point",
+                    "type": "info"
+                },
+                {
+                    "pitch": -12,
+                    "yaw": -15,
+                    "text": "Bottom Left Region",
+                    "type": "info"
+                }
+            ]
+        });
+
+        function resizeContainer(w, h) {
+            var p = document.getElementById('panorama');
+            p.style.width = w + 'px';
+            p.style.height = h + 'px';
+            setTimeout(function () {
+                viewer.resize();
+            }, 600);
+        }
+    </script>
+
+</body>
+
+</html>

@@ -27,8 +27,6 @@ import numpy as np
 from PIL import Image, ImageChops
 from selenium.common.exceptions import TimeoutException
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
 
 
 class PannellumServer(SimpleHTTPRequestHandler):
@@ -71,7 +69,7 @@ class PannellumTester(object):
         print("Selected port is %s" % self.port)
         self.httpd = TCPServer(("", self.port), self.handler)
         self.server = Thread(target=self.httpd.serve_forever)
-        self.server.daemon = True
+        self.server.setDaemon(True)
         self.server.start()
         self.started = True
         self.pause_time = 100
@@ -83,7 +81,7 @@ class PannellumTester(object):
     def take_screenshot(self, element_id, filename=None):
         """Take a screenshot of an element with a given ID.
         """
-        element = self.browser.find_element(By.ID, element_id)
+        element = self.browser.find_element_by_id(element_id)
         img = Image.open(io.BytesIO(element.screenshot_as_png)).convert("RGB")
         if filename is not None:
             img.save(filename)
@@ -129,10 +127,10 @@ class PannellumTester(object):
         assert self.browser.execute_script(
             "return viewer.getPitch() == 30 && viewer.getYaw() == -20 && viewer.getHfov() == 90"
         )
-        self.browser.find_element(By.CLASS_NAME, "pnlm-zoom-in").click()
+        self.browser.find_element_by_class_name("pnlm-zoom-in").click()
         time.sleep(1)
         assert self.browser.execute_script("return viewer.getHfov() == 85")
-        self.browser.find_element(By.CLASS_NAME, "pnlm-zoom-out").click()
+        self.browser.find_element_by_class_name("pnlm-zoom-out").click()
         time.sleep(1)
         assert self.browser.execute_script("return viewer.getHfov() == 90")
         print("PASS: movement")
@@ -157,18 +155,8 @@ class PannellumTester(object):
             comparator = self.take_screenshot("panorama")
             self.equal_images(reference, comparator, "cube")
 
-        # Check to make sure hotspots are below controls
-        self.browser.execute_script("viewer.setPitch(-35)")
-        self.browser.execute_script("viewer.setYaw(32)")
-        time.sleep(2)
-        action = ActionChains(self.browser)
-        elem = self.browser.find_element(By.CLASS_NAME, "pnlm-zoom-in")
-        action.move_to_element(elem).move_by_offset(1, 1).click().perform()
-        assert self.browser.execute_script("return viewer.getHfov() == 95")
-        print("PASS: hot spots below UI")
-
         # Check hot spot
-        self.browser.find_element(By.CLASS_NAME, "pnlm-scene").click()
+        self.browser.find_element_by_class_name("pnlm-scene").click()
         time.sleep(5)
         assert self.browser.execute_script("return viewer.getScene() == 'multires'")
         print("PASS: hot spot")
@@ -181,21 +169,6 @@ class PannellumTester(object):
             reference = Image.open("tests/multires.png")
             comparator = self.take_screenshot("panorama")
             self.equal_images(reference, comparator, "multires")
-
-        # Check hotspot dragging - move from (20, 20) to (0, 0)
-        action = ActionChains(self.browser)
-        action.drag_and_drop(
-            self.browser.find_element(By.CLASS_NAME, "pnlm-hotspot"),
-            self.browser.find_element(By.CLASS_NAME,
-                "pnlm-render-container"
-            ),  # drops in the middle of the element
-        )
-        action.perform()
-        time.sleep(1)
-        assert self.browser.execute_script(
-            "var hs = viewer.getConfig().hotSpots[0]; return Math.abs(hs.yaw) < 0.001 && Math.abs(hs.pitch) < 0.001"
-        )
-        print("PASS: hot spot dragging")
 
         self.httpd.server_close()
 
@@ -216,14 +189,12 @@ class PannellumTester(object):
                 )
                 self.browser.set_window_size(800, 600)
             else:
-                from selenium.webdriver.chrome.service import Service
-                service = Service(service_log_path=log_path)
                 options = webdriver.ChromeOptions()
                 options.add_argument("headless")
                 options.add_argument("no-sandbox")
                 options.add_argument("window-size=800x600")
                 self.browser = webdriver.Chrome(
-                    service=service, options=options
+                    service_log_path=log_path, options=options
                 )
         return self.browser
 

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Changes in Antigravity Fork (2026-01-29)
+----------------------------------------
+
+New Features:
+ - Added support for 2D images (`type: '2d'`)
+ - Added `objectFit` parameter for 2D images (`contain` or `cover`)
 
 Changes in Pannellum 2.5.6 (2019-11-26)
 ---------------------------------------

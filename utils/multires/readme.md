@@ -16,20 +16,12 @@ or [Docker](https://www.docker.com/) can be used to avoid this installation.
 ### Option 1: with local dependencies
 
 The `generate.py` script depends on `nona` (from [Hugin](http://hugin.sourceforge.net/)),
-as well as Python 3 with the [Pillow](https://pillow.readthedocs.org/) and
-[NumPy](https://numpy.org/) packages. The [pyshtools](https://shtools.github.io/SHTOOLS/)
-Python package is also recommended. On Ubuntu, these dependencies can be
-installed by running:
+as well as Python with the [Pillow](https://pillow.readthedocs.org/) package. On Ubuntu,
+these dependencies can be installed by running:
 
 ```bash
-$ sudo apt install python3 python3-pil python3-numpy python3-pip hugin-tools
-$ pip3 install --user pyshtools
+$ sudo apt install python3 python3-pil hugin-tools
 ```
-
-If you have issues installing `pyshtools`, you may be on an architecture for
-which PyPI does not have pre-built binaries. In this case, you might need to
-install the dependencies described in the
-[pyshtools build-from-source directions](https://shtools.github.io/SHTOOLS/python-installing.html#build-from-source).
 
 Once the dependencies are installed, a tileset can generated with:
 
@@ -88,12 +80,12 @@ $ python3 -m http.server
 
 A generated tileset and configuration in `utils/multires/output` can then be viewed by navigating a browser to:
 
-[http://localhost:8000/src/standalone/pannellum.htm#config=../../utils/multires/output/config.json](http://localhost:8000/src/standalone/pannellum.htm#config=../../utils/multires/output/config.json)
+[http://localhost:8000/src/standalone/pannellum.htm?config=../../utils/multires/output/config.json](http://localhost:8000/src/standalone/pannellum.htm?config=../../utils/multires/output/config.json)
 
 When the page is loaded, the console will output a logging stream corresponding to the HTTP requests:
 
 ```bash
-127.0.0.1 - - [09/Aug/2019 09:41:24] "GET /src/standalone/pannellum.htm HTTP/1.1" 200 -
+127.0.0.1 - - [09/Aug/2019 09:41:24] "GET /src/standalone/pannellum.htm?config=../../utils/multires/output/config.json HTTP/1.1" 200 -
 127.0.0.1 - - [09/Aug/2019 09:41:24] "GET /src/css/pannellum.css HTTP/1.1" 200 -
 127.0.0.1 - - [09/Aug/2019 09:41:24] "GET /src/standalone/standalone.css HTTP/1.1" 200 -
 127.0.0.1 - - [09/Aug/2019 09:41:24] "GET /src/js/libpannellum.js HTTP/1.1" 200 -

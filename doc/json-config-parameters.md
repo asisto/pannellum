@@ -7,8 +7,8 @@
 
 ### `type` (string)
 
-This specifies the panorama type. Can be `equirectangular`, `cubemap`, or
-`multires`. Defaults to `equirectangular`.
+This specifies the panorama type. Can be `equirectangular`, `cubemap`,
+`multires`, or `2d`. Defaults to `equirectangular`.
 
 
 ### `title` (string)
@@ -70,14 +70,19 @@ after it is loaded. This parameter only has an effect if the `autoRotate`
 parameter is set.
 
 
+### `fallback` (string)
+
+If set, the value is used as a URL for a fallback viewer in case Pannellum is
+not supported by the user's device. The user will be given the option to click
+a link and visit this URL if Pannellum fails to work.
+
+
 ### `orientationOnByDefault` (boolean)
 
 If set to `true`, device orientation control will be used when the panorama is
 loaded, if the device supports it. If false, device orientation control needs
 to be activated by pressing a button. Defaults to `false`. Note that a secure
 HTTPS connection is required for device orientation access in most browsers.
-Additionally, this feature does not work in combination with `autoLoad: true`
-in most browsers, since a user interaction is required to prompt for permission.
 
 
 ### `showZoomCtrl` (boolean)
@@ -94,30 +99,12 @@ If set to `false`, zooming with keyboard will be disabled. Defaults to `true`.
 
 If set to `false`, zooming with mouse wheel will be disabled. Defaults to `true`.
 Can also be set to `fullscreenonly`, in which case it is only enabled when the
-viewer is fullscreen. Can also be set to `ctrl`, in which case the `ctrl` key
-must be held down to zoom with the mouse wheel (except while the viewer is
-fullscreen); when the `ctrl` key is required for mouse wheel zooming, the use
-of `ctrl` / `shift` for zoom control is disabled.
-
-
-### `doubleClickZoom` (boolean)
-
-If set to `false`, the zoom to click location on double click function will be
-disabled. Defaults to `true`.
+viewer is fullscreen.
 
 
 ### `draggable` (boolean)
 
 If set to `false`, mouse and touch dragging is disabled. Defaults to `true`.
-
-
-### `dragConfirm` (boolean or string)
-
-If set to `false`, one finger can be used to pan viewer. Defaults to `false`.
-Can also be set to `pitch`, `yaw`, or `both`. If set to `pitch` or `both`, two
-fingers need to be used to pan vertically (except while the viewer is
-fullscreen). If set to `yaw` or `both`, two fingers need to be used to pan
-horizontally (except while the viewer is fullscreen).
 
 
 ### `friction` (number)
@@ -168,10 +155,7 @@ Sets the panorama's starting horizontal field of view in degrees. Defaults to
 ### `minYaw` and `maxYaw` (number)
 
 Sets the minimum / maximum yaw the viewer edge can be at, in degrees.
-Defaults to `-180` / `180`, i.e., no limit, which are also the minimum and
-maximum values for these parameters. A further restriction is `minYaw` must
-be less than `maxYaw`, and with these parameters set, the viewer cannot pass
-the +/-180 degree point.
+Defaults to `-180` / `180`, i.e. no limit.
 
 
 ### `minPitch` and `maxPitch` (number)
@@ -244,14 +228,6 @@ the configuration is provided via the URL; it defaults to `false` but can be
 set to `true` when using the API.
 
 
-### `targetBlank` (boolean)
-
-When `true`, `target="_blank"` is set on most hyperlinks to open them in new
-tabs. This is always `true` when using the standalone viewer since said viewer
-is often used in an `<iframe>`, where it doesn't make sense to open the link in
-the same place. Defaults to `false`.
-
-
 ### `crossOrigin` (string)
 
 This specifies the type of CORS request used and can be set to either
@@ -320,7 +296,7 @@ Specifies the HFOV of the target scene, in degrees. Can also be set to `same`,
 which uses the current HFOV of the current scene as the initial HFOV of the
 target scene.
 
-#### `id` (string)
+#### `id`
 
 Specifies hot spot ID, for use with API's `removeHotSpot` function.
 
@@ -338,31 +314,15 @@ spot tooltip DOM instead of the default function. The contents of
 #### `clickHandlerFunc` (function) and `clickHandlerArgs` (object)
 
 If `clickHandlerFunc` is specified, this function is added as an event handler
-for the hot spot's `click`, `pointerup`, and `touchend` events. The event object
-and the contents of `clickHandlerArgs` are passed to the function as arguments.
+for the hot spot's `click` event. The event object and the contents of
+`clickHandlerArgs` are passed to the function as arguments.
 
-#### `draggable`
-
-If specified, the hotspot can moved using the mouse or by touch.
-
-#### `dragHandlerFunc` (function) and `dragHandlerArgs` (object)
-
-If `dragHandlerFunc` is specified, this function is added as an event handler
-when dragging of the hotspot starts and ends. The event object and the contents of
-`dragHandlerArgs` are passed to the function as arguments. Possible types of the
-event object are: `mousedown`, `pointerdown`, `touchend`, `pointerup`, `pointerleave`, 
-`mouseup`, and `mouseleave`.
-
-#### `scale` (boolean or number)
+#### `scale` (boolean)
 
 When `true`, the hot spot is scaled to match changes in the field of view,
 relative to the initial field of view. Note that this does not account for
 changes in local image scale that occur due to distortions within the viewport.
 Defaults to `false`.
-
-#### `scaleFactor` (number)
-
-Applies a fixed scaling to the default hot spot size. Can be combined with `scale`.
 
 ### `hotSpotDebug` (boolean)
 
@@ -386,8 +346,7 @@ Specifies an array containing RGB values [0, 1] that sets the background color
 for areas where no image data is available. Defaults to `[0, 0, 0]` (black).
 For partial `equirectangular` panoramas this applies to areas past the edges of
 the defined rectangle. For `multires` and `cubemap` (including fallback) panoramas
-this applies to areas corresponding to missing tiles or faces. If set to `null`,
-the background is not cleared.
+this applies to areas corresponding to missing tiles or faces.
 
 ### `avoidShowingBackground` (boolean)
 
@@ -396,18 +355,16 @@ by constraining the yaw and the field-of-view. Even at the corners and edges
 of the canvas only areas actually belonging to the image
 (i.e., within [`minYaw`, `maxYaw`] and [`minPitch`, `maxPitch`]) are shown,
 thus setting the `backgroundColor` option is not needed if this option is set.
-Defaults to `false`. The `minPitch` and `maxPitch` parameters must be defined
-if this option is enabled.
+Defaults to `false`.
 
 
 ## `equirectangular` specific options
 
-### `panorama` (string or HTMLImageElement or ImageData or ImageBitmap)
+### `panorama` (string)
 
-If a string is passed, it sets the URL to the equirectangular panorama image. 
-This is relative to `basePath` if it is set, else it is relative to the location of
+Sets the URL to the equirectangular panorama image. This is relative to
+`basePath` if it is set, else it is relative to the location of
 `pannellum.htm`. An absolute URL can also be used.
-Alternatively, an already loaded image can be passed.
 
 ### `haov` (number)
 
@@ -495,29 +452,20 @@ This specifies the size in pixels of the full resolution cube faces the image
 tiles were created from.
 
 
-#### `shtHash` (string)
-
-Specifies the spherical-harmonic-transform-based preview hash. This is rendered
-instead of the background color before the base set of cube faces are loaded.
 
 
-#### `equirectangularThumbnail` (string or HTMLImageElement or ImageData or ImageBitmap)
+## `2d` specific options
 
-Specifies a equirectangular preview thumbnail to be rendered instead of the
-background color or SHT hash before the base set of cube faces are loaded. This
-image can either be specified as a Base64-encoded string or as an object that
-can be directly uploaded to a WebGL texture, e.g., `ImageData`, `ImageBitmap`,
-`HTMLImageElement`, `HTMLCanvasElement` objects. If a Base64-encoded string is
-used, the image size should be kept small, since it needs to be loaded with the
-configuration parameters.
+### `panorama` (string)
 
+Sets the URL to the 2D image. This is relative to `basePath` if it is set, else
+it is relative to the location of `pannellum.htm`. An absolute URL can also be
+used.
 
-#### `missingTiles` (string)
+### `objectFit` (string)
 
-This specifies tiles that are missing and should not be loaded. A compact
-encoding is used for these data.
-
-
+Sets how the image should reside within its container. Can be `contain` or
+`cover`. Defaults to `contain`.
 
 ## Dynamic content specific options
 

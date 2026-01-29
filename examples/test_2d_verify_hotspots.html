@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Hotspot Test - Pitch/Yaw</title>
+    <link rel="stylesheet" href="../src/css/pannellum.css" />
+    <script type="text/javascript" src="../src/js/pannellum.js"></script>
+    <style>
+        #panorama {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="panorama"></div>
+    <script>
+        pannellum.viewer('panorama', {
+            "type": "2d",
+            "panorama": "2d-img-1.jpg",
+            "autoLoad": true,
+            "objectFit": "contain",
+            "hotSpots": [
+                {
+                    "pitch": 0,
+                    "yaw": 0,
+                    "type": "info",
+                    "text": "Center (0,0)"
+                },
+                {
+                    "pitch": 10,
+                    "yaw": 10,
+                    "type": "info",
+                    "text": "Top-Right (10,10)"
+                },
+                {
+                    "pitch": 14.1,
+                    "yaw": 1.5,
+                    "type": "info",
+                    "text": "User Example (14.1, 1.5)"
+                }
+            ]
+        });
+    </script>
+</body>
+
+</html>
