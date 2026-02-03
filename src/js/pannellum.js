@@ -877,6 +877,13 @@ window.pannellum = (function (window, document, undefined) {
          */
         function mouseEventToCoords(event) {
             var pos = mousePosition(event);
+            if (config.type == '2d') {
+                if (renderer && renderer.pxPerDeg) {
+                    var deltaYaw = (pos.x - renderer.containerW / 2) / renderer.pxPerDeg;
+                    var deltaPitch = (renderer.containerH / 2 - pos.y) / renderer.pxPerDeg;
+                    return [config.pitch + deltaPitch, config.yaw + deltaYaw];
+                }
+            }
             var canvas = renderer.getCanvas();
             var canvasWidth = canvas.clientWidth,
                 canvasHeight = canvas.clientHeight;

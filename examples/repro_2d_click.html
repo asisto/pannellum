@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Click Reproduction</title>
+    <link rel="stylesheet" href="../src/css/pannellum.css" />
+    <script type="text/javascript" src="../src/js/libpannellum.js"></script>
+    <script type="text/javascript" src="../src/js/pannellum.js"></script>
+    <style>
+        #panorama {
+            width: 800px;
+            height: 600px;
+            background: #eee;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>2D Click Reproduction</h1>
+    <div id="panorama"></div>
+
+    <p>
+        Click anywhere on the image to place a red marker. <br>
+        If the logic is correct, the marker should appear exactly where you clicked.
+    </p>
+
+    <script>
+        var viewer = pannellum.viewer('panorama', {
+            "type": "2d",
+            "panorama": "2d-img-1.jpg",
+            "autoLoad": true,
+            "objectFit": "contain",
+            "hotSpots": []
+        });
+
+        viewer.on('mousedown', function(e) {
+            var coords = viewer.mouseEventToCoords(e);
+            console.log('Clicked at:', coords);
+            
+            // Add a small red square hotspot at the calculated coordinates
+            viewer.addHotSpot({
+                "pitch": coords[0],
+                "yaw": coords[1],
+                "type": "info",
+                "text": "Click"
+            });
+        });
+    </script>
+
+</body>
+
+</html>
