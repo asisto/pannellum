@@ -8,12 +8,25 @@ New Features:
  - Added support for 2D images (`type: '2d'`)
  - Added `objectFit` parameter for 2D images (`contain` or `cover`)
 
+Changes in Pannellum 2.5.7 (2026-02-18)
+---------------------------------------
+
+Security fixes:
+ - Fixed XSS vulnerability regarding hot spot attributes that allowed script
+   execution without any user interaction other than visiting the standalone
+   viewer from a link that pointed to a malicious JSON config file
+   (GHSA-8423-w5wx-h2r6)
+ - Require same-origin for JSON config file for standalone viewer to mitigate
+   XSS risk
+ - Sanitize load error URLs
+
+
 Changes in Pannellum 2.5.6 (2019-11-26)
 ---------------------------------------
 
 Security fixes:
  - Extended partial fix in v2.5.5 for XSS vulnerability that allowed script
-   execution when hot spots were clicked (CVE-2019-16763)
+   execution when hot spots were clicked (CVE-2019-16763 / GHSA-m52x-29pq-w3vv)
 
 
 Changes in Pannellum 2.5.5 (2019-11-21)
@@ -25,7 +38,7 @@ Bugfixes:
 
 Security fixes:
  - Fixed XSS vulnerability that allowed script execution when hot spots
-   were clicked (CVE-2019-16763)
+   were clicked (CVE-2019-16763 / GHSA-m52x-29pq-w3vv)
 
 
 Changes in Pannellum 2.5.4 (2019-09-10)

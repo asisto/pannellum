@@ -8,7 +8,8 @@ to be used with the `config`.
 
 ## `config`
 
-Specifies the URL of a JSON configuration file.
+Specifies the URL of a JSON configuration file. This must be hosted on the same
+origin as the `pannellum.htm` file.
 
 
 ## Other parameters
