@@ -39,7 +39,13 @@ def JScompress(text):
     with os.fdopen(in_tuple[0], 'w') as handle:
         handle.write(text)
     out_tuple = tempfile.mkstemp()
-    os.system("java -jar compiler.jar --language_in=ECMASCRIPT5 --warning_level=QUIET --js %s --js_output_file %s" % (in_tuple[1], out_tuple[1]))
+    ret = os.system("java -jar compiler.jar --language_in=ECMASCRIPT5 --warning_level=QUIET --js %s --js_output_file %s" % (in_tuple[1], out_tuple[1]))
+    if ret != 0:
+        print("Warning: Closure compiler failed, using uncompressed JS.")
+        os.close(out_tuple[0])
+        os.unlink(in_tuple[1])
+        os.unlink(out_tuple[1])
+        return text
     with os.fdopen(out_tuple[0], 'r') as handle:
         compressed = handle.read()
     os.unlink(in_tuple[1])
@@ -51,7 +57,13 @@ def cssCompress(text):
     with os.fdopen(in_tuple[0], 'w') as handle:
         handle.write(text)
     out_tuple = tempfile.mkstemp()
-    os.system("java -jar yuicompressor-2.4.7.jar %s --type css -o %s --charset utf-8 -v" % (in_tuple[1], out_tuple[1]))
+    ret = os.system("java -jar yuicompressor-2.4.7.jar %s --type css -o %s --charset utf-8 -v" % (in_tuple[1], out_tuple[1]))
+    if ret != 0:
+        print("Warning: YUI CSS compressor failed, using uncompressed CSS.")
+        os.close(out_tuple[0])
+        os.unlink(in_tuple[1])
+        os.unlink(out_tuple[1])
+        return text
     with os.fdopen(out_tuple[0], 'r') as handle:
         compressed = handle.read()
     os.unlink(in_tuple[1])
@@ -63,7 +75,13 @@ def htmlCompress(text):
     with os.fdopen(in_tuple[0], 'w') as handle:
         handle.write(text)
     out_tuple = tempfile.mkstemp()
-    os.system("java -jar htmlcompressor-1.5.3.jar --remove-intertag-spaces --remove-quotes -o %s %s" % (out_tuple[1], in_tuple[1]))
+    ret = os.system("java -jar htmlcompressor-1.5.3.jar --remove-intertag-spaces --remove-quotes -o %s %s" % (out_tuple[1], in_tuple[1]))
+    if ret != 0:
+        print("Warning: HTML compressor failed, using uncompressed HTML.")
+        os.close(out_tuple[0])
+        os.unlink(in_tuple[1])
+        os.unlink(out_tuple[1])
+        return text
     with os.fdopen(out_tuple[0], 'r') as handle:
         compressed = handle.read()
     os.unlink(in_tuple[1])

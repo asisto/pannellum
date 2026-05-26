@@ -438,6 +438,7 @@ window.pannellum = (function (window, document, undefined) {
                             a.href = p;
                             a.textContent = a.href;
                             anError(config.strings.fileAccessError.replace('%s', a.outerHTML));
+                            return;
                         }
                         var img = this.response;
                         parseGPanoXMP(img);
@@ -662,80 +663,86 @@ window.pannellum = (function (window, document, undefined) {
 
                 // This awful browser specific test exists because iOS 8 does not work
                 // with non-progressive encoded JPEGs.
-                if (navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad).* os 8_/)) {
+                if (img && navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad).* os 8_/)) {
                     var flagIndex = img.indexOf('\xff\xc2');
                     if (flagIndex < 0 || flagIndex > 65536)
                         anError(config.strings.iOS8WebGLError);
                 }
 
-                var start = img.indexOf('<x:xmpmeta');
-                if (start > -1 && config.ignoreGPanoXMP !== true) {
-                    var xmpData = img.substring(start, img.indexOf('</x:xmpmeta>') + 12);
+                if (img) {
+                    var start = img.indexOf('<x:xmpmeta');
+                    if (start > -1 && config.ignoreGPanoXMP !== true) {
+                        var xmpData = img.substring(start, img.indexOf('</x:xmpmeta>') + 12);
 
-                    // Extract the requested tag from the XMP data
-                    var getTag = function (tag) {
-                        var result;
-                        if (xmpData.indexOf(tag + '="') >= 0) {
-                            result = xmpData.substring(xmpData.indexOf(tag + '="') + tag.length + 2);
-                            result = result.substring(0, result.indexOf('"'));
-                        } else if (xmpData.indexOf(tag + '>') >= 0) {
-                            result = xmpData.substring(xmpData.indexOf(tag + '>') + tag.length + 1);
-                            result = result.substring(0, result.indexOf('<'));
-                        }
-                        if (result !== undefined) {
-                            return Number(result);
-                        }
-                        return null;
-                    };
-
-                    // Relevant XMP data
-                    var xmp = {
-                        fullWidth: getTag('GPano:FullPanoWidthPixels'),
-                        croppedWidth: getTag('GPano:CroppedAreaImageWidthPixels'),
-                        fullHeight: getTag('GPano:FullPanoHeightPixels'),
-                        croppedHeight: getTag('GPano:CroppedAreaImageHeightPixels'),
-                        topPixels: getTag('GPano:CroppedAreaTopPixels'),
-                        heading: getTag('GPano:PoseHeadingDegrees'),
-                        horizonPitch: getTag('GPano:PosePitchDegrees'),
-                        horizonRoll: getTag('GPano:PoseRollDegrees')
-                    };
-
-                    if (xmp.fullWidth !== null && xmp.croppedWidth !== null &&
-                        xmp.fullHeight !== null && xmp.croppedHeight !== null &&
-                        xmp.topPixels !== null) {
-
-                        // Set up viewer using GPano XMP data
-                        if (specifiedPhotoSphereExcludes.indexOf('haov') < 0)
-                            config.haov = xmp.croppedWidth / xmp.fullWidth * 360;
-                        if (specifiedPhotoSphereExcludes.indexOf('vaov') < 0)
-                            config.vaov = xmp.croppedHeight / xmp.fullHeight * 180;
-                        if (specifiedPhotoSphereExcludes.indexOf('vOffset') < 0)
-                            config.vOffset = ((xmp.topPixels + xmp.croppedHeight / 2) / xmp.fullHeight - 0.5) * -180;
-                        if (xmp.heading !== null && specifiedPhotoSphereExcludes.indexOf('northOffset') < 0) {
-                            // TODO: make sure this works correctly for partial panoramas
-                            config.northOffset = xmp.heading;
-                            if (config.compass !== false) {
-                                config.compass = true;
+                        // Extract the requested tag from the XMP data
+                        var getTag = function (tag) {
+                            var result;
+                            if (xmpData.indexOf(tag + '="') >= 0) {
+                                result = xmpData.substring(xmpData.indexOf(tag + '="') + tag.length + 2);
+                                result = result.substring(0, result.indexOf('"'));
+                            } else if (xmpData.indexOf(tag + '>') >= 0) {
+                                result = xmpData.substring(xmpData.indexOf(tag + '>') + tag.length + 1);
+                                result = result.substring(0, result.indexOf('<'));
                             }
-                        }
-                        if (xmp.horizonPitch !== null && xmp.horizonRoll !== null) {
-                            if (specifiedPhotoSphereExcludes.indexOf('horizonPitch') < 0)
-                                config.horizonPitch = xmp.horizonPitch;
-                            if (specifiedPhotoSphereExcludes.indexOf('horizonRoll') < 0)
-                                config.horizonRoll = xmp.horizonRoll;
-                        }
+                            if (result !== undefined) {
+                                return Number(result);
+                            }
+                            return null;
+                        };
 
-                        // TODO: add support for initial view settings
+                        // Relevant XMP data
+                        var xmp = {
+                            fullWidth: getTag('GPano:FullPanoWidthPixels'),
+                            croppedWidth: getTag('GPano:CroppedAreaImageWidthPixels'),
+                            fullHeight: getTag('GPano:FullPanoHeightPixels'),
+                            croppedHeight: getTag('GPano:CroppedAreaImageHeightPixels'),
+                            topPixels: getTag('GPano:CroppedAreaTopPixels'),
+                            heading: getTag('GPano:PoseHeadingDegrees'),
+                            horizonPitch: getTag('GPano:PosePitchDegrees'),
+                            horizonRoll: getTag('GPano:PoseRollDegrees')
+                        };
+
+                        if (xmp.fullWidth !== null && xmp.croppedWidth !== null &&
+                            xmp.fullHeight !== null && xmp.croppedHeight !== null &&
+                            xmp.topPixels !== null) {
+
+                            // Set up viewer using GPano XMP data
+                            if (specifiedPhotoSphereExcludes.indexOf('haov') < 0)
+                                config.haov = xmp.croppedWidth / xmp.fullWidth * 360;
+                            if (specifiedPhotoSphereExcludes.indexOf('vaov') < 0)
+                                config.vaov = xmp.croppedHeight / xmp.fullHeight * 180;
+                            if (specifiedPhotoSphereExcludes.indexOf('vOffset') < 0)
+                                config.vOffset = ((xmp.topPixels + xmp.croppedHeight / 2) / xmp.fullHeight - 0.5) * -180;
+                            if (xmp.heading !== null && specifiedPhotoSphereExcludes.indexOf('northOffset') < 0) {
+                                // TODO: make sure this works correctly for partial panoramas
+                                config.northOffset = xmp.heading;
+                                if (config.compass !== false) {
+                                    config.compass = true;
+                                }
+                            }
+                            if (xmp.horizonPitch !== null && xmp.horizonRoll !== null) {
+                                if (specifiedPhotoSphereExcludes.indexOf('horizonPitch') < 0)
+                                    config.horizonPitch = xmp.horizonPitch;
+                                if (specifiedPhotoSphereExcludes.indexOf('horizonRoll') < 0)
+                                    config.horizonRoll = xmp.horizonRoll;
+                            }
+
+                            // TODO: add support for initial view settings
+                        }
                     }
                 }
 
                 // Load panorama
-                panoImage.src = window.URL.createObjectURL(image);
+                if (image) {
+                    panoImage.src = window.URL.createObjectURL(image);
+                }
             });
-            if (reader.readAsBinaryString !== undefined)
-                reader.readAsBinaryString(image);
-            else
-                reader.readAsText(image);
+            if (image) {
+                if (reader.readAsBinaryString !== undefined)
+                    reader.readAsBinaryString(image);
+                else
+                    reader.readAsText(image);
+            }
         }
 
         /**
