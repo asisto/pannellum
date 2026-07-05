@@ -15,7 +15,7 @@ Security fixes:
  - Fixed XSS vulnerability regarding hot spot attributes that allowed script
    execution without any user interaction other than visiting the standalone
    viewer from a link that pointed to a malicious JSON config file
-   (GHSA-8423-w5wx-h2r6)
+   (CVE-2026-27210 / GHSA-8423-w5wx-h2r6)
  - Require same-origin for JSON config file for standalone viewer to mitigate
    XSS risk
  - Sanitize load error URLs
